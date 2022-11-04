@@ -44,7 +44,7 @@ create table stocks(
 create table purchases(
 	id int not null PRIMARY KEY IDENTITY(1,2),
 	dat date not null,
-	condition varchar(6) not null,
+	condition int not null,
 	invoice_expiration date not null ,
 	total double not null,
 	total_iva double not null,
@@ -63,18 +63,20 @@ create table providers(
 create table payment(
 	id int not null PRIMARY KEY IDENTITY(1,2),
 	payment_order_id int not null FOREIGN KEY REFERENCES payments_orders(id),
-	purchase_id int not null FOREIGN KEY REFERENCES purchases(id)
+	purchase_id int not null FOREIGN KEY REFERENCES purchases(id),
+	monto decimal not null 
 );
 create table payments_orders(
 	id int not null PRIMARY KEY IDENTITY(1,2),
-	dat date not null,
-	total double not 
+	date date not null,
+	total double not null
 );
 
 create table pay_method_detail(
 	id int not null PRIMARY KEY IDENTITY(1,2),
 	pay_method_id int not null FOREIGN KEY REFERENCES pay_methods(id),
-	payment_order_id int not null FOREIGN KEY REFERENCES  payments_orders(id)
+	payment_order_id int not null FOREIGN KEY REFERENCES  payments_orders(id),
+	monto  decimal not null
 )
 
 create table pay_methods(
@@ -93,7 +95,8 @@ create table deposit_transfers(id int not null PRIMARY KEY IDENTITY(1,2),
 origin_deposit_id int not null FOREIGN KEY REFERENCES deposits(id),
 destination_deposit_id int not null FOREIGN KEY REFERENCES deposits(id),
 manager_id int not null FOREIGN KEY REFERENCES persons(id),
-authorization_id int not null FOREIGN KEY REFERENCES persons(id)
+authorization_id int not null FOREIGN KEY REFERENCES persons(id),
+date date not null 			       
 )
 
 
