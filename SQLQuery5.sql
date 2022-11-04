@@ -82,20 +82,20 @@ create table pay_methods(
 	name varchar(100) not null
 )
 
-create table deposit_transfers(id int not null PRIMARY KEY IDENTITY(1,2),
-origin_deposit_id int not null FOREIGN KEY REFERENCES (),
-destination_deposit_id int not null FOREIGN KEY REFERENCES(),
-manager_id int not null FOREIGN KEY REFERENCES (),
-authorization_id int not null FOREIGN KEY REFERENCES persons(id)
-)
-
-
 create table persons(
 id int not null PRIMARY KEY IDENTITY(1,2),
 name varchar(100) not null,
 lastname varchar(100) not null 
 rol_id int  not null FOREIGN KEY REFERENCES rol(id)
 )
+
+create table deposit_transfers(id int not null PRIMARY KEY IDENTITY(1,2),
+origin_deposit_id int not null FOREIGN KEY REFERENCES deposits(id),
+destination_deposit_id int not null FOREIGN KEY REFERENCES deposits(id),
+manager_id int not null FOREIGN KEY REFERENCES persons(id),
+authorization_id int not null FOREIGN KEY REFERENCES persons(id)
+)
+
 
 create table rol(id int not null PRIMARY KEY IDENTITY(1,2),
 name varchar(100) not null
