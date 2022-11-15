@@ -208,6 +208,13 @@ date date not null
 insert into deposit_transfers (origin_deposit_id,destination_deposit_id,manager_id,authorization_id,date)
 values(1,3,1,1,'2022-05-07')
 
+create table purchases_details(id int not null PRIMARY KEY IDENTITY(1,2),
+			       product_id int not null FOREIGN KEY REFERENCES products(id),
+			       purchase_id int not null foreign key references purchases(id),
+			       quantity int not null,
+			       unit_cost decimal not null,
+			       iva decimal not null)
+
 Select * from deposits ,persons
 
 
