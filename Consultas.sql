@@ -6,7 +6,7 @@ de compras para esa fecha y depósito.
 
 select purchases.dat, deposits.name, deposits.id,  SUM( purchases.total) as total
 from deposits
-inner join purchases on deposit_id = deposits.id
+inner join purchases on purchases.deposit_id = deposits.id
 where purchases.dat between  '2022-11-10' and  '2022-12-30'
 group by deposits.name, purchases.dat, deposits.id
 
@@ -21,3 +21,56 @@ inner join purchases_details on purchases_details.purchase_id = purchases.id
 inner join products on products.id = purchases_details.product_id
 where providers.id between 1 and 10 and purchases.dat between '2022-11-01' and '2022-11-30'
 group by  providers.id, providers.name, products.id, products.description, products.unit_cost
+
+
+/*
+Productos comprados a más de un proveedor por rango de proveedores, desplegar
+los atributos: Código y descripción del Producto, código y nombre del proveedor. (2)
+*/
+
+select products.id, products.description, providers.id, providers.name
+from products
+inner join purchases_details on purchases_details.product_id = products.id
+inner join purchases on purchases.id = purchases_details.purchase_id
+inner join providers on providers.id = purchases.provider_id
+where products.id in (
+	select count(providers.name) as Cantidad
+	from providers
+	inner join purchases on purchases.provider_id = providers.id
+	inner join purchases_details on purchases_details.purchase_id = purchases.id
+	inner join products on products.id = purchases_details.product_id
+	group by  products.id, products.description, providers.id, providers.name
+	having count(providers.name) >= 2 
+)
+
+
+
+/*
+Informe de facturas de compra vencidas aun no pagadas, desplegar los atributos:
+Factura, fecha, código y nombre del proveedor, total de la factura y saldo de la
+factura. (1)
+*/
+select purchases.dat, providers.id, providers.name, purchases.total, purchases.saldo
+from purchases 
+inner join providers on purchases.provider_id = providers.id
+where purchases.invoice_expiration < GETDATE()
+
+/*
+Ranking de productos (Productos más comprados, por cantidad de productos). (2)
+*/
+select products.id, products.name, products.description, products.unit_cost, products.iva, SUM(purchases_details.quantity) as cantidad
+from products
+inner join purchases_details on purchases_details.product_id = products.id
+group by products.id, products.name, products.description, products.unit_cost, products.iva
+order by cantidad desc
+
+
+/*
+Ranking de proveedores (Proveedores a los que más se les compra, por monto de
+facturación). (2)
+*/
+select providers.id, providers.name, providers.email, providers.phone, SUM(purchases.total) as total_comprado
+from providers
+inner join purchases on purchases.provider_id = providers.id 
+group by providers.id, providers.name, providers.email, providers.phone
+order by total_comprado desc
