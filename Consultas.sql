@@ -28,19 +28,17 @@ Productos comprados a más de un proveedor por rango de proveedores, desplegar
 los atributos: Código y descripción del Producto, código y nombre del proveedor. (2)
 */
 
-select products.id, products.description, providers.id, providers.name
-from products
-inner join purchases_details on purchases_details.product_id = products.id
+select products.id, products.name, providers.id, providers.name
+from purchases_details 
+inner join products on products.id = purchases_details.product_id
 inner join purchases on purchases.id = purchases_details.purchase_id
 inner join providers on providers.id = purchases.provider_id
 where products.id in (
-	select count(providers.name) as Cantidad
-	from providers
-	inner join purchases on purchases.provider_id = providers.id
-	inner join purchases_details on purchases_details.purchase_id = purchases.id
-	inner join products on products.id = purchases_details.product_id
-	group by  products.id, products.description, providers.id, providers.name
-	having count(providers.name) >= 2 
+	select products.id from products
+	inner join purchases_details on purchases_details.product_id = products.id
+	inner join purchases on purchases.id = purchases_details.purchase_id
+	group by products.id
+	having count(distinct purchases.provider_id) > 1
 )
 
 
@@ -74,3 +72,23 @@ from providers
 inner join purchases on purchases.provider_id = providers.id 
 group by providers.id, providers.name, providers.email, providers.phone
 order by total_comprado desc
+
+
+/*Productos que no se compraron por rango de fecha, desplegar los atributos: código y 
+descripción del producto, precio de compra, ultima fecha de compra. (2) (Resolver 
+con procedimiento almacenado*/
+create or alter procedure ProductosNoComprados
+@InitialDate Date, @FinalDate Date
+as
+select products.id, products.name, products.unit_cost, max(purchases.dat)
+from products 
+inner join purchases_details on  purchases_details.product_id = products.id
+inner join purchases on purchases_details.purchase_id = purchases.id
+where products.id not in(
+	select products.id from products
+	inner join purchases_details on purchases_details.product_id = products.id
+	inner join purchases on purchases.id = purchases_details.purchase_id
+	where purchases.dat >= @InitialDate and purchases.dat <= @FinalDate
+)
+group by products.id, products.name, products.unit_cost
+exec ProductosNoComprados '2022-10-14','2022-11-01'
