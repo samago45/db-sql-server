@@ -77,6 +77,7 @@ order by total_comprado desc
 /*Productos que no se compraron por rango de fecha, desplegar los atributos: código y 
 descripción del producto, precio de compra, ultima fecha de compra. (2) (Resolver 
 con procedimiento almacenado*/
+
 create or alter procedure ProductosNoComprados
 @InitialDate Date, @FinalDate Date
 as
