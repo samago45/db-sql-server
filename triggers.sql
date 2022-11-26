@@ -30,7 +30,7 @@ as begin
 
 	update purchases set
 		total = total + @cantidad*@costo_unitario,
-		total_iva = total + @cantidad*@iva
+		total_iva = total_iva + @cantidad*@iva
 	where purchases.id = @idCompra;
 
 	if exists(select 1 from stocks where deposit_id = @idDeposito and product_id = @idProducto )
@@ -98,7 +98,7 @@ as begin
 	/*Dehaciendo cambios en Compra anterior*/
 	update purchases set
 		total = total - @cantidad_anterior*@costo_unitario_anterior,
-		total_iva = total -  @cantidad_anterior*@iva_anterior
+		total_iva = total_iva -  @cantidad_anterior*@iva_anterior
 	where purchases.id = @idCompra_anterior;
 
 	/*Dehaciendo cambios de stock anterior*/
@@ -110,7 +110,7 @@ as begin
 	/*Actualizando Nueva compra*/
 	update purchases set
 		total = total + @cantidad*@costo_unitario,
-		total_iva = total + @cantidad*@iva
+		total_iva = total_iva + @cantidad*@iva
 	where purchases.id = @idCompra;
 
 	if exists(select 1 from stocks where deposit_id = @idDeposito and product_id = @idProducto )
@@ -155,7 +155,7 @@ as begin
 	/*Dehaciendo cambios en Compra anterior*/
 	update purchases set
 		total = total - @cantidad_anterior*@costo_unitario_anterior,
-		total_iva = total - @cantidad_anterior*@iva_anterior
+		total_iva = total_iva - @cantidad_anterior*@iva_anterior
 	where purchases.id = @idCompra_anterior;
 
 	/*Dehaciendo cambios de stock anterior*/
