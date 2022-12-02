@@ -215,6 +215,9 @@ create table purchases_details(id int not null PRIMARY KEY IDENTITY(1,2),
 			       unit_cost decimal not null,
 			       iva decimal not null)
 
-Select * from deposits ,persons
-
-
+create table transfer_details(
+	id int not null PRIMARY key IDENTITY(1,1),
+	stock_id int not null foreign key references stocks(id),
+	deposit_transfer_id int not null foreign key references deposit_transfers(id),
+	quantity int not null;
+)

@@ -77,10 +77,6 @@ order by total_comprado desc
 /*Productos que no se compraron por rango de fecha, desplegar los atributos: código y 
 descripción del producto, precio de compra, ultima fecha de compra. (2) (Resolver 
 con procedimiento almacenado*/
-
-create or alter procedure ProductosNoComprados
-@InitialDate Date, @FinalDate Date
-as
 select products.id, products.name, products.unit_cost, max(purchases.dat)
 from products 
 inner join purchases_details on  purchases_details.product_id = products.id
@@ -89,7 +85,5 @@ where products.id not in(
 	select products.id from products
 	inner join purchases_details on purchases_details.product_id = products.id
 	inner join purchases on purchases.id = purchases_details.purchase_id
-	where purchases.dat >= @InitialDate and purchases.dat <= @FinalDate
-)
-group by products.id, products.name, products.unit_cost
-exec ProductosNoComprados '2022-10-14','2022-11-01'
+	where purchases.dat >= '2022-10-14' and purchases.dat <= '2022-11-01'
+
